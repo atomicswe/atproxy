@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"os"
+	"os/signal"
 
 	"github.com/atomicswe/atproxy/internal/config"
 	"github.com/atomicswe/atproxy/internal/proxy"
@@ -17,5 +19,18 @@ func main() {
 
 	v := request.NewValidator(config.Validator)
 	p := proxy.NewProxy(v)
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		for sig := range c {
+			if sig != os.Interrupt {
+				continue
+			}
+			p.Finish()
+			os.Exit(0)
+		}
+	}()
+
 	server.StartServer(p, config.Server)
 }

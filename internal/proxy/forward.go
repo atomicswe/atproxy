@@ -9,6 +9,7 @@ import (
 )
 
 func forward(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
 	client := &http.Client{
 		Transport: &http.Transport{
 			MaxIdleConns:        100,
@@ -42,4 +43,5 @@ func forward(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(resp.StatusCode)
 	io.Copy(w, resp.Body)
+	log.Printf("request to '%v' finished, took %dms", r.Host, time.Since(start).Milliseconds())
 }

@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"sync"
+	"time"
 )
 
 func tunnelConn(dst, src net.Conn) {
@@ -19,6 +20,7 @@ func tunnelConn(dst, src net.Conn) {
 }
 
 func tunnel(w http.ResponseWriter, r *http.Request) {
+	start := time.Now()
 	target, err := net.Dial("tcp", r.Host)
 	if err != nil {
 		log.Println("ERROR: failed to dial to target", r.Host)
@@ -51,4 +53,5 @@ func tunnel(w http.ResponseWriter, r *http.Request) {
 	wg.Wait()
 	client.Close()
 	target.Close()
+	log.Printf("request to '%v' finished, took %dms", r.Host, time.Since(start).Milliseconds())
 }

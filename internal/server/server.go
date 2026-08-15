@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/atomicswe/atproxy/internal/proxy"
 )
@@ -28,6 +29,7 @@ func NewServerConfig() ServerConfig {
 func StartServer(p *proxy.Proxy, s ServerConfig) {
 	addr := fmt.Sprintf("%s:%d", s.Address, s.Port)
 	log.Println("starting proxy server on adress:", addr)
+	p.StartTime = time.Now()
 	if err := http.ListenAndServe(addr, p); err != nil {
 		log.Fatal("failed to listen and serve with error: ", err)
 	}

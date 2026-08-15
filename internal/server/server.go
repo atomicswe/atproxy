@@ -8,12 +8,24 @@ import (
 	"github.com/atomicswe/atproxy/internal/proxy"
 )
 
-type ServerFlags struct {
+const (
+	defaultPort   = 11111
+	defaultAdress = "" // intentionally empty "" => localhost
+)
+
+type ServerConfig struct {
 	Port    int
 	Address string
 }
 
-func StartServer(p *proxy.Proxy, s ServerFlags) {
+func NewServerConfig() ServerConfig {
+	return ServerConfig{
+		Port:    defaultPort,
+		Address: defaultAdress,
+	}
+}
+
+func StartServer(p *proxy.Proxy, s ServerConfig) {
 	addr := fmt.Sprintf("%s:%d", s.Address, s.Port)
 	log.Println("starting proxy server on adress:", addr)
 	if err := http.ListenAndServe(addr, p); err != nil {

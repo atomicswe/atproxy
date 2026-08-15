@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"log"
 
 	"github.com/atomicswe/atproxy/internal/config"
@@ -11,14 +10,6 @@ import (
 )
 
 func main() {
-	address := flag.String("addr", "", "proxy address")
-	port := flag.Int("port", 11111, "proxy port")
-	flag.Parse()
-	serverFlags := server.ServerFlags{
-		Address: *address,
-		Port:    *port,
-	}
-
 	config, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal("failed to load configurations", err)
@@ -26,5 +17,5 @@ func main() {
 
 	v := request.NewValidator(config.Validator)
 	p := proxy.NewProxy(v)
-	server.StartServer(p, serverFlags)
+	server.StartServer(p, config.Server)
 }

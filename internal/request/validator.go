@@ -9,6 +9,12 @@ type ValidatorConfig struct {
 	AllowedDomains []string `json:"allowed_domains"`
 }
 
+func NewValidatorConfig() ValidatorConfig {
+	return ValidatorConfig{
+		AllowedDomains: []string{},
+	}
+}
+
 type Validator struct {
 	config ValidatorConfig
 }

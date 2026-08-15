@@ -19,8 +19,6 @@ func forward(w http.ResponseWriter, r *http.Request) {
 		Timeout: 30 * time.Second,
 	}
 
-	log.Printf("received request for: %s\n", r.URL)
-
 	req, err := http.NewRequest(r.Method, r.URL.String(), r.Body)
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
@@ -33,6 +31,7 @@ func forward(w http.ResponseWriter, r *http.Request) {
 	// Forward request
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Println("ERROR: failed to forward request with error:", err.Error())
 		http.Error(w, "Server Error", http.StatusInternalServerError)
 		return
 	}

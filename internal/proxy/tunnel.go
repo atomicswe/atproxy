@@ -29,12 +29,12 @@ func tunnel(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	hj, ok := w.(http.Hijacker)
 	if !ok {
-		log.Fatal("ERROR: http server doesn't support hijacking connection")
+		log.Println("ERROR: http server doesn't support hijacking connection")
 	}
 
 	client, _, err := hj.Hijack()
 	if err != nil {
-		log.Fatal("ERROR: http hijacking failed", err)
+		log.Println("ERROR: http hijacking failed with error:", err)
 	}
 
 	log.Printf("creating tunnel to '%v'", r.Host)

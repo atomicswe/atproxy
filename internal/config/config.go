@@ -70,6 +70,10 @@ func (c *Config) saveConfig(path string) error {
 }
 
 func getConfigPath() (string, error) {
+	if p := os.Getenv("ATPROXY_CONFIG_PATH"); p != "" {
+		return p, nil
+	}
+
 	dir, err := os.UserConfigDir()
 	if err != nil {
 		return "", err

@@ -29,16 +29,4 @@ if ! [[ -e $EXE_NAME ]]; then
 	echo "ERROR: The executable build failed."
 	exit 1
 fi
-echo "Finished building the go executable."
-
-mkdir -p $OPT_DIR
-if ! [[ -d "$OPT_DIR" ]]; then
-	echo "ERROR: Failed to create the opt directory for atproxy at: '$OPT_DIR'"
-	exit 1
-fi
-
-mv $EXE_NAME $OPT_DIR
-if ! [[ -e "$OPT_DIR/$EXE_NAME" ]]; then
-	echo "ERROR: Failed to move the executable to '$OPT_DIR'."
-	exit 1
-fi
+echo "Built the go executable successfully."

@@ -24,7 +24,7 @@ func main() {
 	signal.Notify(c, os.Interrupt)
 	go func() {
 		for sig := range c {
-			if sig != os.Interrupt {
+			if sig != os.Interrupt && sig != os.Kill {
 				continue
 			}
 			p.Finish()

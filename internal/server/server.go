@@ -15,8 +15,8 @@ const (
 )
 
 type ServerConfig struct {
-	Port    int
-	Address string
+	Port    int    `json:"port"`
+	Address string `json:"address"`
 }
 
 func NewServerConfig() ServerConfig {

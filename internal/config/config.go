@@ -2,7 +2,9 @@ package config
 
 import (
 	"encoding/json"
+	"log"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/atomicswe/atproxy/internal/request"
@@ -10,7 +12,7 @@ import (
 )
 
 const (
-	configFilePath = "config.json"
+	configFileName = "atproxy.json"
 )
 
 type Config struct {
@@ -18,17 +20,23 @@ type Config struct {
 	Validator request.ValidatorConfig `json:"validator"`
 }
 
-// LoadConfig tries to load the config from the `configFilePath`
+// LoadConfig tries to load the config from the config path
 // if it fails due the file not existing, it creates a new config.
 // At the end, it saves the config as it is loaded.
 func LoadConfig() (*Config, error) {
+	path, err := getConfigPath()
+	if err != nil {
+		return nil, err
+	}
+	log.Println("config file location:", path)
+
 	config := newConfig()
-	err := load(config)
+	err = load(path, config)
 	if err != nil && !strings.Contains(err.Error(), "no such file or directory") {
 		return nil, err
 	}
 
-	return config, config.saveConfig()
+	return config, config.saveConfig(path)
 }
 
 func newConfig() *Config {
@@ -38,8 +46,8 @@ func newConfig() *Config {
 	}
 }
 
-func load(c *Config) error {
-	data, err := os.ReadFile(configFilePath)
+func load(path string, c *Config) error {
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}
@@ -50,13 +58,25 @@ func load(c *Config) error {
 	return nil
 }
 
-func (c *Config) saveConfig() error {
+func (c *Config) saveConfig(path string) error {
 	data, err := json.MarshalIndent(c, "", "\t")
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(configFilePath, data, 0644)
+	err = os.WriteFile(path, data, 0644)
 
 	return err
+}
+
+func getConfigPath() (string, error) {
+	dir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	dir = filepath.Join(dir, "atproxy")
+	if err = os.MkdirAll(dir, 0o755); err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, configFileName), nil
 }

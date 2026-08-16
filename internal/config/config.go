@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	configFileName = "atproxy.json"
+	configFileName = "config.json"
 )
 
 type Config struct {
